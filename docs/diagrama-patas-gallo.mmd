@@ -1,0 +1,38 @@
+erDiagram
+    GENRE ||--o{ MOVIE_GENRE : has
+    MOVIE ||--o{ MOVIE_GENRE : includes
+    YEAR ||--o{ MOVIE : includes
+    MOVIE ||--o{ MOVIE_ACTOR : relates
+    ACTOR ||--o{ MOVIE_ACTOR : participates
+
+    GENRE {
+        ID id PK
+        TEXT name
+    }
+
+   YEAR {
+        ID id PK
+        NUMBER value
+    }
+
+    MOVIE {
+        ID id PK
+        TEXT title
+        ID year_id FK
+    }
+
+    MOVIE_GENRE {
+        ID movie_id PK, FK
+        ID genre_id PK, FK
+    }
+
+    ACTOR {
+        ID id PK
+        TEXT name
+    }
+
+    MOVIE_ACTOR {
+        ID movie_id PK, FK
+        ID actor_id PK, FK
+    }
+

@@ -1,0 +1,36 @@
+flowchart LR
+    MOVIE[Movie]
+    GENRE[Genre]
+    YEAR[Year]
+    ACTOR[Actor]
+
+    MOVIE_GENRE{belongs to} 
+    MOVIE_YEAR{released in}
+    MOVIE_ACTOR{participates in}
+
+    MOVIE ---|N| MOVIE_GENRE
+    MOVIE_GENRE ---|M| GENRE
+
+    MOVIE ---|N| MOVIE_YEAR
+    MOVIE_YEAR ---|1| YEAR
+
+    MOVIE ---|N| MOVIE_ACTOR
+    MOVIE_ACTOR ---|M| ACTOR
+
+    MOVIE_ID((id))
+    MOVIE_TITLE((title))
+    GENRE_ID((id))
+    GENRE_NAME((name))
+    YEAR_ID((id))
+    YEAR_VALUE((value))
+    ACTOR_ID((id))
+    ACTOR_NAME((name))
+
+    MOVIE --- MOVIE_ID
+    MOVIE --- MOVIE_TITLE
+    GENRE --- GENRE_ID
+    GENRE --- GENRE_NAME
+    YEAR --- YEAR_ID
+    YEAR --- YEAR_VALUE
+    ACTOR --- ACTOR_ID
+    ACTOR --- ACTOR_NAME
