@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Column;
 
 @Entity
 @Table(name = "movies")
@@ -15,6 +16,7 @@ public class MovieEntity {
     private Long id;
 
     private String title;
+    @Column(name = "release_year")
     private Integer year;
 
     public MovieEntity() {
