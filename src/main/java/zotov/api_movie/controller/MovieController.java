@@ -38,4 +38,11 @@ public class MovieController {
         MovieDTOResponse dtoResponse = movieService.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(dtoResponse);
     }
+
+    @PutMapping("{id}")
+    public ResponseEntity<MovieDTOResponse> update(@PathVariable Long id, @Valid @RequestBody MovieDTORequest dto) {
+        return movieService.update(id, dto)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
 }

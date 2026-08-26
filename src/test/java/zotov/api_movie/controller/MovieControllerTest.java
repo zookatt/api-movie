@@ -4,6 +4,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.List;
@@ -74,5 +75,37 @@ class MovieControllerTest {
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.title").value("Lost in Translation"))
                 .andExpect(jsonPath("$.year").value(2003));
+    }
+
+    @Test
+    void shouldUpdateMovie() throws Exception {
+        MovieDTOResponse movie = new MovieDTOResponse(1L, "Lost in Translation", 2003);
+        when(movieService.update(any(Long.class), any(MovieDTORequest.class))).thenReturn(Optional.of(movie));
+        mockMvc.perform(put("/api/v1/movies/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "title": "Lost in Translation",
+                            "year": 2003
+                        }
+                        """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.title").value("Lost in Translation"))
+                .andExpect(jsonPath("$.year").value(2003));
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenUpdatingMissingMovie() throws Exception {
+        when(movieService.update(any(Long.class), any(MovieDTORequest.class))).thenReturn(Optional.empty());
+        mockMvc.perform(put("/api/v1/movies/99")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                            "title": "Lost in Translation",
+                            "year": 2003
+                        }
+                        """))
+                .andExpect(status().isNotFound());
     }
 }
