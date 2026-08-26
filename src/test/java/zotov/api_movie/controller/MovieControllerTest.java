@@ -2,6 +2,7 @@ package zotov.api_movie.controller;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -106,6 +107,20 @@ class MovieControllerTest {
                             "year": 2003
                         }
                         """))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldDeleteMovie() throws Exception {
+        when(movieService.deleteById(1L)).thenReturn(true);
+        mockMvc.perform(delete("/api/v1/movies/1"))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenDeletingMissingMovie() throws Exception {
+        when(movieService.deleteById(99L)).thenReturn(false);
+        mockMvc.perform(delete("/api/v1/movies/99"))
                 .andExpect(status().isNotFound());
     }
 }
