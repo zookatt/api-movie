@@ -1,0 +1,32 @@
+package zotov.api_movie.controller;
+
+import java.util.List;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import zotov.api_movie.dto.MovieDTOResponse;
+import zotov.api_movie.service.MovieService;
+
+@RestController
+@RequestMapping(path = "${api-endpoint}/movies")
+public class MovieController {
+
+    private final MovieService movieService;
+
+    public MovieController(MovieService movieService) {
+        this.movieService = movieService;
+    }
+
+    @GetMapping("")
+    public List<MovieDTOResponse> index() {
+        return movieService.findAll();
+    }
+
+    @GetMapping("{id}")
+    public ResponseEntity<MovieDTOResponse> getById(@PathVariable Long id) {
+        return movieService.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+}
