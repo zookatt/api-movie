@@ -1,0 +1,56 @@
+package zotov.api_movie.controller;
+
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
+import zotov.api_movie.dto.MovieDTOResponse;
+import zotov.api_movie.service.MovieService;
+
+@WebMvcTest(MovieController.class)
+class MovieControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockitoBean
+    private MovieService movieService;
+
+    @Test
+    void shouldReturnAllMovies() throws Exception {
+        MovieDTOResponse movie = new MovieDTOResponse(1L, "Lost in Translation", 2003);
+        when(movieService.findAll()).thenReturn(List.of(movie));
+        mockMvc.perform(get("/api/v1/movies"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].title").value("Lost in Translation"))
+                .andExpect(jsonPath("$[0].year").value(2003));
+    }
+
+    @Test
+    void shouldReturnMovieById() throws Exception {
+        MovieDTOResponse movie = new MovieDTOResponse(1L, "Lost in Translation", 2003);
+        when(movieService.findById(1L)).thenReturn(Optional.of(movie));
+        mockMvc.perform(get("/api/v1/movies/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.title").value("Lost in Translation"))
+                .andExpect(jsonPath("$.year").value(2003));
+    }
+
+    @Test
+    void shouldReturnNotFoundWhenMovieDoesNotExist() throws Exception {
+        when(movieService.findById(99L)).thenReturn(Optional.empty());
+        mockMvc.perform(get("/api/v1/movies/99"))
+                .andExpect(status().isNotFound());
+    }
+}
