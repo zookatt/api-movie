@@ -35,8 +35,9 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public MovieDTOResponse create(MovieDTORequest dto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'create'");
+        return MovieMapper.toDTO(
+                movieRepository.save(MovieMapper.toEntity(dto))
+        );
     }
 
     @Override

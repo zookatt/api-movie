@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import zotov.api_movie.dto.MovieDTORequest;
 import zotov.api_movie.dto.MovieDTOResponse;
 import zotov.api_movie.entity.MovieEntity;
 import zotov.api_movie.repository.MovieRepository;
@@ -14,6 +15,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -52,5 +54,16 @@ class MovieServiceImplTest {
         when(movieRepository.findById(99L)).thenReturn(Optional.empty());
         Optional<MovieDTOResponse> foundMovie = movieService.findById(99L);
         assertTrue(foundMovie.isEmpty());
+    }
+
+    @Test
+    void shouldCreateMovie() {
+        MovieDTORequest dto = new MovieDTORequest("Lost in Translation", 2003);
+        MovieEntity savedMovie = new MovieEntity(1L, "Lost in Translation", 2003);
+        when(movieRepository.save(any(MovieEntity.class))).thenReturn(savedMovie);
+        MovieDTOResponse response = movieService.create(dto);
+        assertEquals(1L, response.id());
+        assertEquals("Lost in Translation", response.title());
+        assertEquals(2003, response.year());
     }
 }
