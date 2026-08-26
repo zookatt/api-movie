@@ -16,6 +16,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -87,5 +89,21 @@ class MovieServiceImplTest {
         when(movieRepository.findById(99L)).thenReturn(Optional.empty());
         Optional<MovieDTOResponse> response = movieService.update(99L, dto);
         assertTrue(response.isEmpty());
+    }
+
+    @Test
+    void shouldDeleteExistingMovie() {
+        when(movieRepository.existsById(1L)).thenReturn(true);
+        boolean deleted = movieService.deleteById(1L);
+        assertTrue(deleted);
+        verify(movieRepository).deleteById(1L);
+    }
+
+    @Test
+    void shouldReturnFalseWhenDeletingMissingMovie() {
+        when(movieRepository.existsById(99L)).thenReturn(false);
+        boolean deleted = movieService.deleteById(99L);
+        assertEquals(false, deleted);
+        verify(movieRepository, never()).deleteById(99L);
     }
 }

@@ -53,7 +53,10 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public boolean deleteById(Long id) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteById'");
+        if (!movieRepository.existsById(id)) {
+            return false;
+        }
+        movieRepository.deleteById(id);
+        return true;
     }
 }
