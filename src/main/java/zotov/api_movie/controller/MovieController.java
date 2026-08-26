@@ -2,9 +2,12 @@ package zotov.api_movie.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
+import zotov.api_movie.dto.MovieDTORequest;
 import zotov.api_movie.dto.MovieDTOResponse;
 import zotov.api_movie.service.MovieService;
 
@@ -28,5 +31,11 @@ public class MovieController {
         return movieService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("")
+    public ResponseEntity<MovieDTOResponse> store(@Valid @RequestBody MovieDTORequest dto) {
+        MovieDTOResponse dtoResponse = movieService.create(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(dtoResponse);
     }
 }
