@@ -1,0 +1,56 @@
+package zotov.api_movie.service;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import zotov.api_movie.dto.MovieDTOResponse;
+import zotov.api_movie.entity.MovieEntity;
+import zotov.api_movie.repository.MovieRepository;
+
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
+
+@ExtendWith(MockitoExtension.class)
+class MovieServiceImplTest {
+
+    @Mock
+    private MovieRepository movieRepository;
+
+    @InjectMocks
+    private MovieServiceImpl movieService;
+
+    @Test
+    void shouldFindAllMovies() {
+        MovieEntity movie = new MovieEntity(1L, "Lost in Translation", 2003);
+        when(movieRepository.findAll()).thenReturn(List.of(movie));
+        List<MovieDTOResponse> movies = movieService.findAll();
+        assertEquals(1, movies.size());
+        assertEquals(1L, movies.get(0).id());
+        assertEquals("Lost in Translation", movies.get(0).title());
+        assertEquals(2003, movies.get(0).year());
+    }
+
+    @Test
+    void shouldFindMovieById() {
+        MovieEntity movie = new MovieEntity(1L, "Lost in Translation", 2003);
+        when(movieRepository.findById(1L)).thenReturn(Optional.of(movie));
+        Optional<MovieDTOResponse> foundMovie = movieService.findById(1L);
+        assertTrue(foundMovie.isPresent());
+        assertEquals(1L, foundMovie.get().id());
+        assertEquals("Lost in Translation", foundMovie.get().title());
+        assertEquals(2003, foundMovie.get().year());
+    }
+
+    @Test
+    void shouldReturnEmptyWhenMovieDoesNotExist() {
+        when(movieRepository.findById(99L)).thenReturn(Optional.empty());
+        Optional<MovieDTOResponse> foundMovie = movieService.findById(99L);
+        assertTrue(foundMovie.isEmpty());
+    }
+}
