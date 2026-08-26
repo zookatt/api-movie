@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import zotov.api_movie.dto.MovieDTORequest;
 import zotov.api_movie.dto.MovieDTOResponse;
+import zotov.api_movie.entity.MovieEntity;
 import zotov.api_movie.mapper.MovieMapper;
 import zotov.api_movie.repository.MovieRepository;
 
@@ -36,14 +37,18 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public MovieDTOResponse create(MovieDTORequest dto) {
         return MovieMapper.toDTO(
-                movieRepository.save(MovieMapper.toEntity(dto))
-        );
+                movieRepository.save(MovieMapper.toEntity(dto)));
     }
 
     @Override
     public Optional<MovieDTOResponse> update(Long id, MovieDTORequest dto) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
+        return movieRepository.findById(id)
+                .map(existingMovie -> {
+                    existingMovie.setTitle(dto.title());
+                    existingMovie.setYear(dto.year());
+                    MovieEntity updatedMovie = movieRepository.save(existingMovie);
+                    return MovieMapper.toDTO(updatedMovie);
+                });
     }
 
     @Override

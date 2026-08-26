@@ -66,4 +66,26 @@ class MovieServiceImplTest {
         assertEquals("Lost in Translation", response.title());
         assertEquals(2003, response.year());
     }
+
+    @Test
+    void shouldUpdateExistingMovie() {
+        MovieDTORequest dto = new MovieDTORequest("Lost in Translation", 2003);
+        MovieEntity existingMovie = new MovieEntity(1L, "Old title", 2000);
+        MovieEntity savedMovie = new MovieEntity(1L, "Lost in Translation", 2003);
+        when(movieRepository.findById(1L)).thenReturn(Optional.of(existingMovie));
+        when(movieRepository.save(any(MovieEntity.class))).thenReturn(savedMovie);
+        Optional<MovieDTOResponse> response = movieService.update(1L, dto);
+        assertTrue(response.isPresent());
+        assertEquals(1L, response.get().id());
+        assertEquals("Lost in Translation", response.get().title());
+        assertEquals(2003, response.get().year());
+    }
+
+    @Test
+    void shouldReturnEmptyWhenUpdatingMissingMovie() {
+        MovieDTORequest dto = new MovieDTORequest("Lost in Translation", 2003);
+        when(movieRepository.findById(99L)).thenReturn(Optional.empty());
+        Optional<MovieDTOResponse> response = movieService.update(99L, dto);
+        assertTrue(response.isEmpty());
+    }
 }
