@@ -120,4 +120,19 @@ class MovieServiceImplTest {
         verify(movieRepository)
                 .findByTitleContainingIgnoreCase("Lost");
     }
+
+    @Test
+    void shouldSearchMoviesByGenre() {
+        MovieEntity movie = new MovieEntity(1L, "Lost in Translation", 2003);
+        when(movieRepository
+                .findDistinctByGenresNameContainingIgnoreCase("Drama"))
+                .thenReturn(List.of(movie));
+        List<MovieDTOResponse> result = movieService.search(null, " Drama ");
+        assertEquals(1, result.size());
+        assertEquals(1L, result.get(0).id());
+        assertEquals("Lost in Translation", result.get(0).title());
+        assertEquals(2003, result.get(0).year());
+        verify(movieRepository)
+                .findDistinctByGenresNameContainingIgnoreCase("Drama");
+    }
 }
