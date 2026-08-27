@@ -10,6 +10,8 @@ import zotov.api_movie.dto.MovieDTOResponse;
 import zotov.api_movie.entity.MovieEntity;
 import zotov.api_movie.repository.MovieRepository;
 import zotov.api_movie.exception.InvalidSearchCriteriaException;
+import zotov.api_movie.exception.MoviesNotFoundException;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -143,5 +145,23 @@ class MovieServiceImplTest {
         assertThrows(
                 InvalidSearchCriteriaException.class,
                 () -> movieService.search(null, null));
+    }
+
+    @Test
+    void shouldRejectSearchWithTitleAndGenre() {
+        assertThrows(
+                InvalidSearchCriteriaException.class,
+                () -> movieService.search("Lost", "Drama"));
+    }
+
+    @Test
+    void shouldThrowExceptionWhenSearchReturnsNoMovies() {
+        when(movieRepository.findByTitleContainingIgnoreCase("Unknown"))
+                .thenReturn(List.of());
+        assertThrows(
+                MoviesNotFoundException.class,
+                () -> movieService.search("Unknown", null));
+        verify(movieRepository)
+                .findByTitleContainingIgnoreCase("Unknown");
     }
 }
