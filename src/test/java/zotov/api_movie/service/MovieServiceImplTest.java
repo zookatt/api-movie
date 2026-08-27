@@ -9,7 +9,7 @@ import zotov.api_movie.dto.MovieDTORequest;
 import zotov.api_movie.dto.MovieDTOResponse;
 import zotov.api_movie.entity.MovieEntity;
 import zotov.api_movie.repository.MovieRepository;
-import zotov.api_movie.globals.InvalidSearchCriteriaException;
+import zotov.api_movie.exception.InvalidSearchCriteriaException;
 import java.util.List;
 import java.util.Optional;
 
