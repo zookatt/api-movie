@@ -9,12 +9,14 @@ import zotov.api_movie.dto.MovieDTORequest;
 import zotov.api_movie.dto.MovieDTOResponse;
 import zotov.api_movie.entity.MovieEntity;
 import zotov.api_movie.repository.MovieRepository;
-
+import zotov.api_movie.globals.InvalidSearchCriteriaException;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -134,5 +136,12 @@ class MovieServiceImplTest {
         assertEquals(2003, result.get(0).year());
         verify(movieRepository)
                 .findDistinctByGenresNameContainingIgnoreCase("Drama");
+    }
+
+    @Test
+    void shouldRejectSearchWithoutCriteria() {
+        assertThrows(
+                InvalidSearchCriteriaException.class,
+                () -> movieService.search(null, null));
     }
 }
