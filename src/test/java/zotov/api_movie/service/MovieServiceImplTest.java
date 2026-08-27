@@ -106,4 +106,18 @@ class MovieServiceImplTest {
         assertEquals(false, deleted);
         verify(movieRepository, never()).deleteById(99L);
     }
+
+    @Test
+    void shouldSearchMoviesByTitle() {
+        MovieEntity movie = new MovieEntity(1L, "Lost in Translation", 2003);
+        when(movieRepository.findByTitleContainingIgnoreCase("Lost"))
+                .thenReturn(List.of(movie));
+        List<MovieDTOResponse> result = movieService.search(" Lost ", null);
+        assertEquals(1, result.size());
+        assertEquals(1L, result.get(0).id());
+        assertEquals("Lost in Translation", result.get(0).title());
+        assertEquals(2003, result.get(0).year());
+        verify(movieRepository)
+                .findByTitleContainingIgnoreCase("Lost");
+    }
 }
