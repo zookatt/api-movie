@@ -4,10 +4,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import zotov.api_movie.dto.MovieDTORequest;
 import zotov.api_movie.dto.MovieDTOResponse;
 import zotov.api_movie.entity.MovieEntity;
+import zotov.api_movie.exception.InvalidSearchCriteriaException;
+import zotov.api_movie.exception.MoviesNotFoundException;
 import zotov.api_movie.mapper.MovieMapper;
 import zotov.api_movie.repository.MovieRepository;
 
@@ -32,6 +35,25 @@ public class MovieServiceImpl implements MovieService {
     public Optional<MovieDTOResponse> findById(Long id) {
         return movieRepository.findById(id)
                 .map(MovieMapper::toDTO);
+    }
+
+    @Override
+    public List<MovieDTOResponse> search(String title, String genre) {
+        boolean hasTitle = StringUtils.hasText(title);
+        boolean hasGenre = StringUtils.hasText(genre);
+        if (hasTitle == hasGenre) {
+            throw new InvalidSearchCriteriaException(
+                    "Provide exactly one search parameter: title or genre");
+        }
+        List<MovieEntity> movies = hasTitle
+                ? movieRepository.findByTitleContainingIgnoreCase(title.trim())
+                : movieRepository.findDistinctByGenresNameContainingIgnoreCase(genre.trim());
+        if (movies.isEmpty()) {
+            throw new MoviesNotFoundException("No movies match the search criteria");
+        }
+        return movies.stream()
+                .map(MovieMapper::toDTO)
+                .toList();
     }
 
     @Override
