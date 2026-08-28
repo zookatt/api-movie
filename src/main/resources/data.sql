@@ -32,6 +32,25 @@ VALUES (DEFAULT, 'The Grand Budapest Hotel', 3);
 INSERT INTO movies (id, title, release_year_id)
 VALUES (DEFAULT, 'Spirited Away', 4);
 
+-- Actors
+INSERT INTO actors (id, name)
+VALUES (DEFAULT, 'Bill Murray');
+INSERT INTO actors (id, name)
+VALUES (DEFAULT, 'Scarlett Johansson');
+INSERT INTO actors (id, name)
+VALUES (DEFAULT, 'Marlon Brando');
+INSERT INTO actors (id, name)
+VALUES (DEFAULT, 'Al Pacino');
+INSERT INTO actors (id, name)
+VALUES (DEFAULT, 'Matthew McConaughey');
+INSERT INTO actors (id, name)
+VALUES (DEFAULT, 'Anne Hathaway');
+INSERT INTO actors (id, name)
+VALUES (DEFAULT, 'Ralph Fiennes');
+INSERT INTO actors (id, name)
+VALUES (DEFAULT, 'Tony Revolori');
+INSERT INTO actors (id, name)
+VALUES (DEFAULT, 'Rumi Hiiragi');
 
 -- Relationship between movies and genres
 -- Lost in Translation → Drama + Comedy
@@ -51,3 +70,24 @@ INSERT INTO movie_genres (movie_id, genre_id) VALUES (4, 2);
 
 -- Spirited Away → Animation
 INSERT INTO movie_genres (movie_id, genre_id) VALUES (5, 5);
+
+-- Relationship between movies and actors
+
+-- Lost in Translation → Bill Murray + Scarlett Johansson
+INSERT INTO movie_actors (movie_id, actor_id) VALUES (1, 1);
+INSERT INTO movie_actors (movie_id, actor_id) VALUES (1, 2);
+
+-- The Godfather → Marlon Brando + Al Pacino
+INSERT INTO movie_actors (movie_id, actor_id) VALUES (2, 3);
+INSERT INTO movie_actors (movie_id, actor_id) VALUES (2, 4);
+
+-- Interstellar → Matthew McConaughey + Anne Hathaway
+INSERT INTO movie_actors (movie_id, actor_id) VALUES (3, 5);
+INSERT INTO movie_actors (movie_id, actor_id) VALUES (3, 6);
+
+-- The Grand Budapest Hotel → Ralph Fiennes + Tony Revolori
+INSERT INTO movie_actors (movie_id, actor_id) VALUES (4, 7);
+INSERT INTO movie_actors (movie_id, actor_id) VALUES (4, 8);
+
+-- Spirited Away → Rumi Hiiragi
+INSERT INTO movie_actors (movie_id, actor_id) VALUES (5, 9);
