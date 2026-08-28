@@ -11,6 +11,7 @@ import zotov.api_movie.entity.MovieEntity;
 import zotov.api_movie.repository.MovieRepository;
 import zotov.api_movie.exception.InvalidSearchCriteriaException;
 import zotov.api_movie.exception.MoviesNotFoundException;
+import zotov.api_movie.repository.ReleaseYearRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +30,8 @@ class MovieServiceImplTest {
 
     @Mock
     private MovieRepository movieRepository;
+    @Mock
+    private ReleaseYearRepository releaseYearRepository;
 
     @InjectMocks
     private MovieServiceImpl movieService;

@@ -13,14 +13,18 @@ import zotov.api_movie.exception.InvalidSearchCriteriaException;
 import zotov.api_movie.exception.MoviesNotFoundException;
 import zotov.api_movie.mapper.MovieMapper;
 import zotov.api_movie.repository.MovieRepository;
+import zotov.api_movie.entity.ReleaseYearEntity;
+import zotov.api_movie.repository.ReleaseYearRepository;
 
 @Service
 public class MovieServiceImpl implements MovieService {
 
     private final MovieRepository movieRepository;
+    private final ReleaseYearRepository releaseYearRepository;
 
-    public MovieServiceImpl(MovieRepository movieRepository) {
+    public MovieServiceImpl(MovieRepository movieRepository, ReleaseYearRepository releaseYearRepository) {
         this.movieRepository = movieRepository;
+        this.releaseYearRepository = releaseYearRepository;
     }
 
     @Override
@@ -56,18 +60,29 @@ public class MovieServiceImpl implements MovieService {
                 .toList();
     }
 
+    private ReleaseYearEntity findOrCreateReleaseYear(Integer value) {
+        return releaseYearRepository.findByValue(value)
+                .orElseGet(() -> releaseYearRepository.save(
+                        new ReleaseYearEntity(null, value)));
+    }
+
     @Override
     public MovieDTOResponse create(MovieDTORequest dto) {
-        return MovieMapper.toDTO(
-                movieRepository.save(MovieMapper.toEntity(dto)));
+        ReleaseYearEntity releaseYear = findOrCreateReleaseYear(dto.year());
+        MovieEntity movie = MovieMapper.toEntity(dto);
+        movie.setReleaseYear(releaseYear);
+        MovieEntity savedMovie = movieRepository.save(movie);
+        return MovieMapper.toDTO(savedMovie);
     }
 
     @Override
     public Optional<MovieDTOResponse> update(Long id, MovieDTORequest dto) {
         return movieRepository.findById(id)
                 .map(existingMovie -> {
+                    ReleaseYearEntity releaseYear = findOrCreateReleaseYear(dto.year());
                     existingMovie.setTitle(dto.title());
                     existingMovie.setYear(dto.year());
+                    existingMovie.setReleaseYear(releaseYear);
                     MovieEntity updatedMovie = movieRepository.save(existingMovie);
                     return MovieMapper.toDTO(updatedMovie);
                 });
