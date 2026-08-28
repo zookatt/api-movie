@@ -172,7 +172,6 @@ class MovieControllerTest {
                 when(movieService.search("Unknown", null))
                                 .thenThrow(new MoviesNotFoundException(
                                                 "No movies match the search criteria"));
-
                 mockMvc.perform(
                                 get("/api/v1/movies/search")
                                                 .param("title", "Unknown"))
