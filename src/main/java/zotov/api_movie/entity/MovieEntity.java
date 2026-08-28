@@ -25,6 +25,9 @@ public class MovieEntity {
     private String title;
     @Column(name = "release_year")
     private Integer year;
+    @ManyToMany
+    @JoinTable(name = "movie_actors", joinColumns = @JoinColumn(name = "movie_id"), inverseJoinColumns = @JoinColumn(name = "actor_id"))
+    private Set<ActorEntity> actors = new HashSet<>();
 
     public MovieEntity() {
     }
@@ -69,5 +72,13 @@ public class MovieEntity {
 
     public void setGenres(Set<GenreEntity> genres) {
         this.genres = genres;
+    }
+
+    public Set<ActorEntity> getActors() {
+        return actors;
+    }
+
+    public void setActors(Set<ActorEntity> actors) {
+        this.actors = actors;
     }
 }
