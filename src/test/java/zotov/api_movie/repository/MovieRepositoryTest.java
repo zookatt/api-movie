@@ -55,10 +55,14 @@ class MovieRepositoryTest {
 
     @Test
     void shouldSaveMovieWithActorRelationship() {
-        ActorEntity actor = actorRepository.save(new ActorEntity(null, "Bill Murray"));
+        ActorEntity actor = actorRepository.save(
+                new ActorEntity(null, "Bill Murray"));
         ReleaseYearEntity releaseYear = releaseYearRepository.save(
                 new ReleaseYearEntity(null, 2003));
-        MovieEntity movie = new MovieEntity(null, "Lost in Translation", releaseYear);
+        MovieEntity movie = new MovieEntity(
+                null,
+                "Lost in Translation",
+                releaseYear);
         movie.setActors(Set.of(actor));
         MovieEntity savedMovie = movieRepository.saveAndFlush(movie);
         Optional<MovieEntity> foundMovie = movieRepository.findById(savedMovie.getId());
@@ -66,6 +70,10 @@ class MovieRepositoryTest {
         assertEquals(1, foundMovie.get().getActors().size());
         assertEquals(
                 "Bill Murray",
-                foundMovie.get().getActors().iterator().next().getName());
+                foundMovie.get()
+                        .getActors()
+                        .iterator()
+                        .next()
+                        .getName());
     }
 }
