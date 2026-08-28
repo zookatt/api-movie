@@ -1,38 +1,37 @@
 erDiagram
-    GENRE ||--o{ MOVIE_GENRE : has
-    MOVIE ||--o{ MOVIE_GENRE : includes
-    YEAR ||--o{ MOVIE : includes
-    MOVIE ||--o{ MOVIE_ACTOR : relates
-    ACTOR ||--o{ MOVIE_ACTOR : participates
+    YEARS ||--o{ MOVIES : "es el estreno de"
+    MOVIES ||--o{ MOVIE_GENRES : "tiene"
+    GENRES ||--o{ MOVIE_GENRES : "clasifica"
+    MOVIES ||--o{ MOVIE_ACTORS : "tiene"
+    ACTORS ||--o{ MOVIE_ACTORS : "participa en"
 
-    GENRE {
-        ID id PK
-        TEXT name
+    MOVIES {
+        BIGINT id PK
+        VARCHAR title
+        BIGINT release_year_id FK
     }
 
-   YEAR {
-        ID id PK
-        NUMBER value
+    YEARS {
+        BIGINT id PK
+        INTEGER year_value
     }
 
-    MOVIE {
-        ID id PK
-        TEXT title
-        ID year_id FK
+    GENRES {
+        BIGINT id PK
+        VARCHAR name
     }
 
-    MOVIE_GENRE {
-        ID movie_id PK, FK
-        ID genre_id PK, FK
+    ACTORS {
+        BIGINT id PK
+        VARCHAR name
     }
 
-    ACTOR {
-        ID id PK
-        TEXT name
+    MOVIE_GENRES {
+        BIGINT movie_id PK, FK
+        BIGINT genre_id PK, FK
     }
 
-    MOVIE_ACTOR {
-        ID movie_id PK, FK
-        ID actor_id PK, FK
+    MOVIE_ACTORS {
+        BIGINT movie_id PK, FK
+        BIGINT actor_id PK, FK
     }
-
