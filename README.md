@@ -211,4 +211,4 @@ src/
 
 ## Autora
 
-Proyecto realizado por Katy Zotov como parte de la formación en Factoría F5.
+Proyecto realizado por Ekaterina Zotova como parte de la formación en Factoría F5.
