@@ -6,6 +6,7 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 
 import zotov.api_movie.entity.GenreEntity;
 import zotov.api_movie.entity.MovieEntity;
+import zotov.api_movie.entity.ActorEntity;
 
 import java.util.Optional;
 import java.util.List;
@@ -16,7 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest(properties = "spring.sql.init.mode=never")
 class MovieRepositoryTest {
-
+    @Autowired
+    private ActorRepository actorRepository;
     @Autowired
     private MovieRepository movieRepository;
     @Autowired
@@ -42,5 +44,19 @@ class MovieRepositoryTest {
                 .findDistinctByGenresNameContainingIgnoreCase("dra");
         assertEquals(1, movies.size());
         assertEquals("Lost in Translation", movies.get(0).getTitle());
+    }
+
+    @Test
+    void shouldSaveMovieWithActorRelationship() {
+        ActorEntity actor = actorRepository.save(new ActorEntity(null, "Bill Murray"));
+        MovieEntity movie = new MovieEntity(null, "Lost in Translation", 2003);
+        movie.setActors(Set.of(actor));
+        MovieEntity savedMovie = movieRepository.saveAndFlush(movie);
+        Optional<MovieEntity> foundMovie = movieRepository.findById(savedMovie.getId());
+        assertTrue(foundMovie.isPresent());
+        assertEquals(1, foundMovie.get().getActors().size());
+        assertEquals(
+                "Bill Murray",
+                foundMovie.get().getActors().iterator().next().getName());
     }
 }
