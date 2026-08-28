@@ -53,4 +53,11 @@ public class MovieController {
         }
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("search")
+    public List<MovieDTOResponse> search(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String genre) {
+        return movieService.search(title, genre);
+    }
 }

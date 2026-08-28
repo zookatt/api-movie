@@ -123,4 +123,19 @@ class MovieControllerTest {
         mockMvc.perform(delete("/api/v1/movies/99"))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void shouldSearchMoviesByTitle() throws Exception {
+        MovieDTOResponse movie = new MovieDTOResponse(1L, "Lost in Translation", 2003);
+        when(movieService.search("Lost", null))
+                .thenReturn(List.of(movie));
+        mockMvc.perform(
+                get("/api/v1/movies/search")
+                        .param("title", "Lost"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1))
+                .andExpect(jsonPath("$[0].title")
+                        .value("Lost in Translation"))
+                .andExpect(jsonPath("$[0].year").value(2003));
+    }
 }
