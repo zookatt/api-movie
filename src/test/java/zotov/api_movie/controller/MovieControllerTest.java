@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import zotov.api_movie.dto.MovieDTORequest;
 import zotov.api_movie.dto.MovieDTOResponse;
 import zotov.api_movie.exception.InvalidSearchCriteriaException;
+import zotov.api_movie.exception.MoviesNotFoundException;
 import zotov.api_movie.service.MovieService;
 
 @WebMvcTest(MovieController.class)
@@ -164,5 +165,19 @@ class MovieControllerTest {
                                 .andExpect(status().isBadRequest())
                                 .andExpect(content().string(
                                                 "Provide exactly one search parameter: title or genre"));
+        }
+
+        @Test
+        void shouldReturnNotFoundWhenSearchHasNoResults() throws Exception {
+                when(movieService.search("Unknown", null))
+                                .thenThrow(new MoviesNotFoundException(
+                                                "No movies match the search criteria"));
+
+                mockMvc.perform(
+                                get("/api/v1/movies/search")
+                                                .param("title", "Unknown"))
+                                .andExpect(status().isNotFound())
+                                .andExpect(content().string(
+                                                "No movies match the search criteria"));
         }
 }
