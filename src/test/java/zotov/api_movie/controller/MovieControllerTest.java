@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import zotov.api_movie.dto.MovieDTORequest;
 import zotov.api_movie.dto.MovieDTOResponse;
+import zotov.api_movie.exception.InvalidSearchCriteriaException;
 import zotov.api_movie.service.MovieService;
 
 @WebMvcTest(MovieController.class)
@@ -152,5 +153,16 @@ class MovieControllerTest {
                                 .andExpect(jsonPath("$[0].title")
                                                 .value("Lost in Translation"))
                                 .andExpect(jsonPath("$[0].year").value(2003));
+        }
+
+        @Test
+        void shouldReturnBadRequestWhenSearchHasNoCriteria() throws Exception {
+                when(movieService.search(null, null))
+                                .thenThrow(new InvalidSearchCriteriaException(
+                                                "Provide exactly one search parameter: title or genre"));
+                mockMvc.perform(get("/api/v1/movies/search"))
+                                .andExpect(status().isBadRequest())
+                                .andExpect(content().string(
+                                                "Provide exactly one search parameter: title or genre"));
         }
 }
