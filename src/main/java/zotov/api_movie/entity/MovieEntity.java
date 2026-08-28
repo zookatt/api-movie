@@ -13,6 +13,7 @@ import java.util.Set;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 
 @Entity
 @Table(name = "movies")
@@ -25,6 +26,9 @@ public class MovieEntity {
     private String title;
     @Column(name = "release_year")
     private Integer year;
+    @ManyToOne
+    @JoinColumn(name = "release_year_id")
+    private ReleaseYearEntity releaseYear;
     @ManyToMany
     @JoinTable(name = "movie_actors", joinColumns = @JoinColumn(name = "movie_id"), inverseJoinColumns = @JoinColumn(name = "actor_id"))
     private Set<ActorEntity> actors = new HashSet<>();
@@ -80,5 +84,13 @@ public class MovieEntity {
 
     public void setActors(Set<ActorEntity> actors) {
         this.actors = actors;
+    }
+
+    public ReleaseYearEntity getReleaseYear() {
+        return releaseYear;
+    }
+
+    public void setReleaseYear(ReleaseYearEntity releaseYear) {
+        this.releaseYear = releaseYear;
     }
 }
