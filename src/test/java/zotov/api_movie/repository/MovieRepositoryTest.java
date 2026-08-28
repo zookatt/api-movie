@@ -2,7 +2,7 @@ package zotov.api_movie.repository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import zotov.api_movie.entity.MovieEntity;
 
 import java.util.Optional;
@@ -10,7 +10,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest
+@DataJpaTest(properties = "spring.sql.init.mode=never")
 class MovieRepositoryTest {
 
     @Autowired
