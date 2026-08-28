@@ -179,4 +179,19 @@ class MovieControllerTest {
                                 .andExpect(content().string(
                                                 "No movies match the search criteria"));
         }
+
+        @Test
+        void shouldReturnBadRequestWhenCreatingMovieWithBlankTitle()
+                        throws Exception {
+                mockMvc.perform(
+                                post("/api/v1/movies")
+                                                .contentType(MediaType.APPLICATION_JSON)
+                                                .content("""
+                                                                {
+                                                                    "title": "",
+                                                                    "year": 2003
+                                                                }
+                                                                """))
+                                .andExpect(status().isBadRequest());
+        }
 }
