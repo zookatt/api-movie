@@ -12,6 +12,7 @@ import zotov.api_movie.repository.MovieRepository;
 import zotov.api_movie.exception.InvalidSearchCriteriaException;
 import zotov.api_movie.exception.MoviesNotFoundException;
 import zotov.api_movie.repository.ReleaseYearRepository;
+import zotov.api_movie.entity.ReleaseYearEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -166,5 +167,23 @@ class MovieServiceImplTest {
                 () -> movieService.search("Unknown", null));
         verify(movieRepository)
                 .findByTitleContainingIgnoreCase("Unknown");
+    }
+
+    @Test
+    void shouldCreateMovieUsingExistingReleaseYear() {
+        MovieDTORequest dto = new MovieDTORequest("Lost in Translation", 2003);
+        ReleaseYearEntity releaseYear = new ReleaseYearEntity(1L, 2003);
+        MovieEntity savedMovie = new MovieEntity(1L, "Lost in Translation", 2003);
+        when(releaseYearRepository.findByValue(2003))
+                .thenReturn(Optional.of(releaseYear));
+        when(movieRepository.save(any(MovieEntity.class)))
+                .thenReturn(savedMovie);
+        MovieDTOResponse response = movieService.create(dto);
+        assertEquals(1L, response.id());
+        assertEquals("Lost in Translation", response.title());
+        assertEquals(2003, response.year());
+        verify(releaseYearRepository).findByValue(2003);
+        verify(releaseYearRepository, never())
+                .save(any(ReleaseYearEntity.class));
     }
 }
