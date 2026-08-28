@@ -7,6 +7,7 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import zotov.api_movie.entity.GenreEntity;
 import zotov.api_movie.entity.MovieEntity;
 import zotov.api_movie.entity.ActorEntity;
+import zotov.api_movie.entity.ReleaseYearEntity;
 
 import java.util.Optional;
 import java.util.List;
@@ -23,21 +24,27 @@ class MovieRepositoryTest {
     private MovieRepository movieRepository;
     @Autowired
     private GenreRepository genreRepository;
+    @Autowired
+    private ReleaseYearRepository releaseYearRepository;
 
     @Test
     void shouldSaveAndFindMovieById() {
-        MovieEntity movie = new MovieEntity(null, "Lost in Translation", 2003);
+        ReleaseYearEntity releaseYear = releaseYearRepository.save(
+                new ReleaseYearEntity(null, 2003));
+        MovieEntity movie = new MovieEntity(null, "Lost in Translation", releaseYear);
         MovieEntity savedMovie = movieRepository.save(movie);
         Optional<MovieEntity> foundMovie = movieRepository.findById(savedMovie.getId());
         assertTrue(foundMovie.isPresent());
         assertEquals("Lost in Translation", foundMovie.get().getTitle());
-        assertEquals(2003, foundMovie.get().getYear());
+        assertEquals(2003, foundMovie.get().getReleaseYear().getValue());
     }
 
     @Test
     void shouldFindMoviesByGenreIgnoringCase() {
         GenreEntity genre = genreRepository.save(new GenreEntity(null, "Drama"));
-        MovieEntity movie = new MovieEntity(null, "Lost in Translation", 2003);
+        ReleaseYearEntity releaseYear = releaseYearRepository.save(
+                new ReleaseYearEntity(null, 2003));
+        MovieEntity movie = new MovieEntity(null, "Lost in Translation", releaseYear);
         movie.setGenres(Set.of(genre));
         movieRepository.saveAndFlush(movie);
         List<MovieEntity> movies = movieRepository
@@ -49,7 +56,9 @@ class MovieRepositoryTest {
     @Test
     void shouldSaveMovieWithActorRelationship() {
         ActorEntity actor = actorRepository.save(new ActorEntity(null, "Bill Murray"));
-        MovieEntity movie = new MovieEntity(null, "Lost in Translation", 2003);
+        ReleaseYearEntity releaseYear = releaseYearRepository.save(
+                new ReleaseYearEntity(null, 2003));
+        MovieEntity movie = new MovieEntity(null, "Lost in Translation", releaseYear);
         movie.setActors(Set.of(actor));
         MovieEntity savedMovie = movieRepository.saveAndFlush(movie);
         Optional<MovieEntity> foundMovie = movieRepository.findById(savedMovie.getId());

@@ -5,7 +5,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Column;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -24,10 +23,9 @@ public class MovieEntity {
     private Long id;
 
     private String title;
-    @Column(name = "release_year")
-    private Integer year;
+
     @ManyToOne
-    @JoinColumn(name = "release_year_id")
+    @JoinColumn(name = "release_year_id", nullable = false)
     private ReleaseYearEntity releaseYear;
     @ManyToMany
     @JoinTable(name = "movie_actors", joinColumns = @JoinColumn(name = "movie_id"), inverseJoinColumns = @JoinColumn(name = "actor_id"))
@@ -36,10 +34,10 @@ public class MovieEntity {
     public MovieEntity() {
     }
 
-    public MovieEntity(Long id, String title, Integer year) {
+    public MovieEntity(Long id, String title, ReleaseYearEntity releaseYear) {
         this.id = id;
         this.title = title;
-        this.year = year;
+        this.releaseYear = releaseYear;
     }
 
     public Long getId() {
@@ -56,14 +54,6 @@ public class MovieEntity {
 
     public void setTitle(String title) {
         this.title = title;
-    }
-
-    public Integer getYear() {
-        return year;
-    }
-
-    public void setYear(Integer year) {
-        this.year = year;
     }
 
     @ManyToMany

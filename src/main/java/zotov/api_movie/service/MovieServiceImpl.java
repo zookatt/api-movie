@@ -69,8 +69,7 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public MovieDTOResponse create(MovieDTORequest dto) {
         ReleaseYearEntity releaseYear = findOrCreateReleaseYear(dto.year());
-        MovieEntity movie = MovieMapper.toEntity(dto);
-        movie.setReleaseYear(releaseYear);
+        MovieEntity movie = MovieMapper.toEntity(dto, releaseYear);
         MovieEntity savedMovie = movieRepository.save(movie);
         return MovieMapper.toDTO(savedMovie);
     }
@@ -81,7 +80,6 @@ public class MovieServiceImpl implements MovieService {
                 .map(existingMovie -> {
                     ReleaseYearEntity releaseYear = findOrCreateReleaseYear(dto.year());
                     existingMovie.setTitle(dto.title());
-                    existingMovie.setYear(dto.year());
                     existingMovie.setReleaseYear(releaseYear);
                     MovieEntity updatedMovie = movieRepository.save(existingMovie);
                     return MovieMapper.toDTO(updatedMovie);

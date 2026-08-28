@@ -39,7 +39,8 @@ class MovieServiceImplTest {
 
     @Test
     void shouldFindAllMovies() {
-        MovieEntity movie = new MovieEntity(1L, "Lost in Translation", 2003);
+        MovieEntity movie = new MovieEntity(
+                1L, "Lost in Translation", new ReleaseYearEntity(1L, 2003));
         when(movieRepository.findAll()).thenReturn(List.of(movie));
         List<MovieDTOResponse> movies = movieService.findAll();
         assertEquals(1, movies.size());
@@ -50,7 +51,8 @@ class MovieServiceImplTest {
 
     @Test
     void shouldFindMovieById() {
-        MovieEntity movie = new MovieEntity(1L, "Lost in Translation", 2003);
+        MovieEntity movie = new MovieEntity(
+                1L, "Lost in Translation", new ReleaseYearEntity(1L, 2003));
         when(movieRepository.findById(1L)).thenReturn(Optional.of(movie));
         Optional<MovieDTOResponse> foundMovie = movieService.findById(1L);
         assertTrue(foundMovie.isPresent());
@@ -69,7 +71,8 @@ class MovieServiceImplTest {
     @Test
     void shouldCreateMovie() {
         MovieDTORequest dto = new MovieDTORequest("Lost in Translation", 2003);
-        MovieEntity savedMovie = new MovieEntity(1L, "Lost in Translation", 2003);
+        MovieEntity savedMovie = new MovieEntity(
+                1L, "Lost in Translation", new ReleaseYearEntity(1L, 2003));
         when(movieRepository.save(any(MovieEntity.class))).thenReturn(savedMovie);
         MovieDTOResponse response = movieService.create(dto);
         assertEquals(1L, response.id());
@@ -80,8 +83,10 @@ class MovieServiceImplTest {
     @Test
     void shouldUpdateExistingMovie() {
         MovieDTORequest dto = new MovieDTORequest("Lost in Translation", 2003);
-        MovieEntity existingMovie = new MovieEntity(1L, "Old title", 2000);
-        MovieEntity savedMovie = new MovieEntity(1L, "Lost in Translation", 2003);
+        MovieEntity existingMovie = new MovieEntity(
+                1L, "Old title", new ReleaseYearEntity(2L, 2000));
+        MovieEntity savedMovie = new MovieEntity(
+                1L, "Lost in Translation", new ReleaseYearEntity(1L, 2003));
         when(movieRepository.findById(1L)).thenReturn(Optional.of(existingMovie));
         when(movieRepository.save(any(MovieEntity.class))).thenReturn(savedMovie);
         Optional<MovieDTOResponse> response = movieService.update(1L, dto);
@@ -117,7 +122,8 @@ class MovieServiceImplTest {
 
     @Test
     void shouldSearchMoviesByTitle() {
-        MovieEntity movie = new MovieEntity(1L, "Lost in Translation", 2003);
+        MovieEntity movie = new MovieEntity(
+                1L, "Lost in Translation", new ReleaseYearEntity(1L, 2003));
         when(movieRepository.findByTitleContainingIgnoreCase("Lost"))
                 .thenReturn(List.of(movie));
         List<MovieDTOResponse> result = movieService.search(" Lost ", null);
@@ -131,7 +137,8 @@ class MovieServiceImplTest {
 
     @Test
     void shouldSearchMoviesByGenre() {
-        MovieEntity movie = new MovieEntity(1L, "Lost in Translation", 2003);
+        MovieEntity movie = new MovieEntity(
+                1L, "Lost in Translation", new ReleaseYearEntity(1L, 2003));
         when(movieRepository
                 .findDistinctByGenresNameContainingIgnoreCase("Drama"))
                 .thenReturn(List.of(movie));
@@ -173,7 +180,8 @@ class MovieServiceImplTest {
     void shouldCreateMovieUsingExistingReleaseYear() {
         MovieDTORequest dto = new MovieDTORequest("Lost in Translation", 2003);
         ReleaseYearEntity releaseYear = new ReleaseYearEntity(1L, 2003);
-        MovieEntity savedMovie = new MovieEntity(1L, "Lost in Translation", 2003);
+        MovieEntity savedMovie = new MovieEntity(
+                1L, "Lost in Translation", releaseYear);
         when(releaseYearRepository.findByValue(2003))
                 .thenReturn(Optional.of(releaseYear));
         when(movieRepository.save(any(MovieEntity.class)))
